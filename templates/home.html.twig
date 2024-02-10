@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <main class="w-2/3 mx-auto bg-white">
+        <h1 class="text-center">Buchliste</h1>
+        <div class="flex flex-col m-2">
+        {% for book in books %}
+            <div class="flex m-2 border rounded-2xl shadow">
+                <div class="min-w-24">
+                    <img class="h-full rounded-l-2xl" src="{{ book.imageUrl }}">
+                </div>
+                <div class="p-2">
+                    <h2 class="line-clamp-1">{{ book.title }}</h2>
+                    <b>{{ book.author }}</b> <br>
+                    <p>
+                        Tags:
+                        {% if book.tags|length > 0 %}
+                            {{ book.tags|join('|') }}
+                        {% endif %}
+                    </p>
+                    <a href="{{ book.goodreadsUrl }}" target="_blank">Goodreads</a>
+                    <p>
+                        Stadtbücherei:
+                        <a href="{{ book.bibFullUrl }}" class="border border-blue-700 rounded mx-1 px-1" target="_blank">Autor und Titel</a>
+                        <a href="{{ book.bibAuthorUrl }}" class="border border-blue-700 rounded mx-1 px-1" target="_blank">Nur Autor</a>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    </main>
+{% endblock %}
