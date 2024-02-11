@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Book;
-use voku\helper\HtmlDomParser;
 
 class GoodReadsService
 {
     private const BASE_URL = 'https://www.goodreads.com/review/list/{USERNAME}?page={PAGE_NUMBER}&print=true&shelf={SHELF_NAME}';
 
-    public function __construct(private readonly BibService $bibService)
-    {
+    public function __construct(
+        private readonly BibService $bibService,
+        private readonly HtmlFetchService $htmlFetchService
+    ) {
     }
 
     /** @return Book[] */
@@ -26,7 +27,11 @@ class GoodReadsService
 
         do {
             $url  = $this->getDecodedShelfUrl($user, $shelf, $page);
-            $html = HtmlDomParser::file_get_html($url);
+            $html = $this->htmlFetchService->fetchHtmlFromUrl($url);
+
+            if ($html === false) {
+                break;
+            }
 
             $tableBody = $html->find('#booksBody tr');
 
@@ -90,7 +95,11 @@ class GoodReadsService
 
         do {
             $url  = $this->getDecodedShelfUrl($user, $tag, $page);
-            $html = HtmlDomParser::file_get_html($url);
+            $html = $this->htmlFetchService->fetchHtmlFromUrl($url);
+
+            if ($html === false) {
+                break;
+            }
 
             $tableBody = $html->find('#booksBody tr');
 
